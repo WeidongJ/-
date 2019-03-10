@@ -7,6 +7,7 @@ import asyncio, os, inspect, logging, functools
 from urllib import parse
 from aiohttp import web
 from apis import APIError
+
 def get(path):
     '''
     Define decorator @get('/path')
@@ -62,10 +63,9 @@ def has_var_kw_arg(fn):
             return True
 
 def has_request_arg(fn):
-    sig = inspect.signature(fn)
-    params = sig.parameters
+    sig = inspect.signature(fn) # signature 返回函数入参元组def d(a,b,c=1):pass signature(d)=(a,b,c=1)
+    params = sig.parameters # .parameters 返回OrderedDict([('a', <Parameter "a">), ('b', <Parameter "b">), ('c', <Parameter "c=1">)])
     found = False
-    params = inspect.signature(fn).parameters
     for name, param in params.items():
         if name == 'request':
             found = True
@@ -138,7 +138,7 @@ class RequestHandler(object):
 
 def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-    app.router.add_static('static', path)
+    app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
 def add_route(app, fn):
@@ -149,17 +149,17 @@ def add_route(app, fn):
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
     logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
-    app.route.add_route(method, path, RequestHandler(app, fn))
+    app.router.add_route(method, path, RequestHandler(app, fn))
     
 def add_routes(app, module_name):
     n = module_name.rfind('.')
     if n == (-1):
-        mod = __import__ (module_name,globals(), locals())
+        mod = __import__ (module_name,globals(), locals()) #__import__ 函数功能用于动态的导入模块，导入handlers
     else:
         name = module_name[n+1:]
         mod = getattr(__import__(module_name[:n],globals(), locals(), [name]), name)
     for attr in dir(mod):
-        if attr.startwith('_'):
+        if attr.startswith('_'):
             continue
         fn = getattr(mod, attr)
         if callable(fn):
