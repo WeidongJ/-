@@ -5,6 +5,6 @@ __author__ = 'weidong'
 
 configs = {
     'db': {
-        'host': '127.0.0.1s'
+        'host': '127.0.0.1'
     }
 }

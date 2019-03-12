@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import config_default
+
 class Dict(dict):
 
     def __init__(self, names=(), values=(), **kw):
@@ -9,13 +10,13 @@ class Dict(dict):
         for k, v in zip(names, values): # zip将可迭代入参打包成元组，python3返回一个对象
             self[k] = v
 
-    def getattr(self, key):
+    def __getattr__(self, key):
         try:
             return self[key]
         except KeyError:
             raise AttributeError(r"'Dict' object has no attrbuite '%s'" % key)
 
-    def setattr(self, key, value):
+    def __setattr__(self, key, value):
         self[key] = value
 
 def merge(defaults,override): # 递归函数复写config
@@ -45,4 +46,5 @@ except ImportError:
     pass
 
 configs = toDict(configs)
+print(configs.session.secret)
     
