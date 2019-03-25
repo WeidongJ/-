@@ -35,5 +35,5 @@ class APIPermissionError(APIError):
     '''
     Indicate the api has no permission.
     '''
-    def __init__(self, field, message=''):
-        super(APIPermissionError, self).__init__('permission:forbidden', field, message)
+    def __init__(self, message=''):
+        super(APIPermissionError, self).__init__('permission:forbidden', 'permission', message)
