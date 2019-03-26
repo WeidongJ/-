@@ -12,7 +12,7 @@ from coroweb import get, post
 
 from models import User, Blog, next_id,Comment
 
-from apis import APIValueError, APIError,APIPermissionError
+from apis import APIValueError, APIError,APIPermissionError, Page
 from config import configs
 
 COOKIE_NAME = 'awesession'
@@ -94,7 +94,7 @@ def api_register_user(*, email, name, passwd):
     if len(users) > 0:
         raise APIError('reguster:failed', 'email', 'Email has already registed')
     uid = next_id()
-    sha1_passwd = '%s:%s' % (uid, email)
+    sha1_passwd = '%s:%s' % (uid, passwd)
     user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(), image='http://\
     www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
     yield from user.save()
@@ -186,6 +186,18 @@ def api_get_blog(*, id):
     blog = yield from Blog.find(id)
     return blog
 
+# 获取blogs
+@get('/api/blogs')
+def api_blogs(*, page='1'):
+    page_index = get_page_index(page)
+    num = yield from Blog.findNumber('count(id)')
+    p = Page(num, page_index)
+    if num == 0:
+        return dict(page=p,blogs=())
+    blogs = yield from Blog.findAll(orderBy='create_time desc', limit=(p.offset, p.limit))
+    return dict(page=p, blogs =blogs)
+
+# 提交blogs
 @post('/api/blogs')
 def api_create_blog(request,*, name, summary, content):
     check_admin(request)
@@ -193,9 +205,16 @@ def api_create_blog(request,*, name, summary, content):
         raise APIValueError('name','name can not be empty.')
     if not summary or not summary.strip():
         raise APIValueError('summary','summary can not be empty.')
-    if not BlockingIOError
+    if not BlockingIOError:
         raise APIValueError('content', 'content can not be empty.')
     blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image, name=name.strip(), summary
     =summary.strip(),content= content.strip())
     yield from blog.save()
     return blog
+
+@get('/manage/blogs')
+def manage_blogs(*,page='1'):
+    return{
+        '__template__': 'manage_blogs.html',
+        'page_index': get_page_index(page)
+    }page_str
