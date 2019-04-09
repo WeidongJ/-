@@ -36,6 +36,7 @@ def text2html(text):
     lines = map(lambda s: '<p>%s</p>' % s.replace('&', '&amp;').replace('<','&lt;').replace('>','&gt;'), filter(lambda s: s.strip() != '', text.split('\n')))
     return ''.join(lines)
 
+# 主页
 @get('/')
 @asyncio.coroutine
 def index(request):
@@ -47,8 +48,7 @@ def index(request):
     ]
     return {
         '__template__': 'blogs.html',
-        'blogs': blogs,
-        '__user__': request.__user__
+        'blogs': blogs
     }
 
 @get('/blog/{id}')
@@ -95,8 +95,7 @@ def api_register_user(*, email, name, passwd):
         raise APIError('reguster:failed', 'email', 'Email has already registed')
     uid = next_id()
     sha1_passwd = '%s:%s' % (uid, passwd)
-    user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(), image='http://\
-    www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
+    user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(), image='http://www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
     yield from user.save()
     # make session cookie
     r = web.Response()
@@ -217,4 +216,4 @@ def manage_blogs(*,page='1'):
     return{
         '__template__': 'manage_blogs.html',
         'page_index': get_page_index(page)
-    }page_str
+    }
