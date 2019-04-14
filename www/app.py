@@ -8,8 +8,10 @@ from datetime import datetime
 
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
+
+from config import configs
 import orm
-from coroweb import add_route, add_routes,add_static
+from coroweb import add_routes, add_static
 from handlers import COOKIE_NAME, cookie2user
 
 def init_jinja2(app, **kw):
@@ -98,6 +100,21 @@ def response_factory(app, handler):
         return resp
     return response
 
+@asyncio.coroutine
+def data_factory(app, handler):
+    @asyncio.coroutine
+    def parse_data(request):
+        if request.method == 'POST':
+            if request.content_type.startswith('application/json'):
+                request.__data__ = yield from request.json()
+                logging.info('request json: %s' % str(request.__data__))
+            elif request.content_type.startswith('application/x-www-form-urlencoded'):
+                request.__data__ = yield from request.post()
+                logging.info('request form: %s' % str(request.__data__))
+        return (yield from handler(request))
+    return parse_data
+
+
 def datetime_filter(t):
     delta = int(time.time()-t)
     if delta <60:
@@ -113,7 +130,7 @@ def datetime_filter(t):
 
 @asyncio.coroutine
 def init(loop):
-    yield from orm.create_pool(loop=loop, host='127.0.0.1',port=3306, user='wdji', password='123456',db='webapp')
+    yield from orm.create_pool(loop=loop, **configs.db)
     app = web.Application(loop=loop,middlewares=[logger_factory, auth_factory, response_factory])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
 

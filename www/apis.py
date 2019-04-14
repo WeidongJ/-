@@ -24,12 +24,12 @@ class APIValueError(APIError):
     def __init__(self, field, message=''):
         super(APIValueError, self).__init__('value:invalid', field, message)
 
-class APIResourceNorFoundError(APIError):
+class APIResourceNotFoundError(APIError):
     '''
     Indicate the resource was not found. The data specifies resource name.
     '''
     def __init__(self, field, message=''):
-        super(APIResourceNorFoundError, self).__init__('resource:notfound', field, message)
+        super(APIResourceNotFoundError, self).__init__('resource:notfound', field, message)
 
 class APIPermissionError(APIError):
     '''
@@ -60,3 +60,7 @@ class Page(object):
         self.page_index, self.page_size, self.offset, self.limit)
 
     __repr__=__str__
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod

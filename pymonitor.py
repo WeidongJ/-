@@ -34,7 +34,7 @@ def kill_process():
 def start_process():
     global process, command
     log('start process %s' % ' '.join(command))
-    process = subprocess.Popen(command, stdin=sys.stdin, stdout=sys,stdout, stderr=sys.stderr)
+    process = subprocess.Popen(command, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
 
 def restart_process():
     kill_process()
@@ -58,8 +58,8 @@ if __name__ =='__main__':
     if not argv:
         print('usage: ./pymonitor your-script.py')
         exit(0)
-    if argv[0] != 'python3':
-        argv.insert(0,'python3')
+    if argv[0] != 'python':
+        argv.insert(0,'python')
     command = argv
     path = os.path.abspath('.')
     start_watch(path, None)
