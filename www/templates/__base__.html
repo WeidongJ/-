@@ -3,12 +3,11 @@
     <head>
         <meta charset="utf-8">
         {% block meta %}<!-- block meta -->{% endblock %}
-        <title>
-            {% block title %} ? {% endblock %} -Practice Project
-        </title>
+        <title>{% block title %} ? {% endblock %} - Practice Project</title>
         <link rel="stylesheet" href="/static/css/uikit.min.css">
         <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
         <link rel="stylesheet" href="/static/css/awesome.css" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
         <script src="/static/js/jquery.min.js"></script>
         <script src="/static/js/sha1.min.js"></script>
         <script src="/static/js/uikit.min.js"></script>
@@ -20,7 +19,7 @@
     <body>
         <nav class="uk-navbar uk-navbar-attached uk-margin-bottom">
             <div class="uk-container uk-container-center">
-                <a href="/" class="uk-nav-brand">Awesome</a>
+                <a href="/" class="uk-navbar-brand">Awesome</a>
                 <ul class="uk-navbar-nav">
                     <li data-url="blogs"><a href="/"><i class="uk-icon-home"></i>日志</a></li>
                     <li data-url="_blank"><a href="#"><i class="uk-icon-book"></i>教程</a></li>

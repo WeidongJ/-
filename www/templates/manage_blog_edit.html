@@ -12,7 +12,7 @@ function initVM(blog){
     var vm = new Vue({
         el: '#vm',
         data: blog,
-        method: {
+        methods: {
             submit :function(event){
                 event.preventDefault();
                 var $form = $('#vm').find('form');
@@ -21,7 +21,7 @@ function initVM(blog){
                         $form.showFormError(err);
                     }
                     else {
-                        return lacation.assign('/manage/blogs');
+                        return location.assign('/manage/blogs');
                     }
                 });
             }
