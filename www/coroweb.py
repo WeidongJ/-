@@ -115,7 +115,7 @@ class RequestHandler(object):
             if not self._has_var_kw_args and self._named_kw_args:
                 copy = dict()
                 for name in self._named_kw_args:
-                    for name in kw:
+                    if name in kw:
                         copy[name] = kw[name]
                 kw = copy
             # check named arg
