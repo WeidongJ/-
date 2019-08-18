@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__='weidong'
+__author__ = 'weidong'
 
 configs = {
     'debug': True,
